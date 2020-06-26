@@ -11,62 +11,59 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-var taskId = 10;
 function upload() {
-    text = document.getElementById("inputCity").value;
-    color = document.getElementById("inputState").value;
-    // count = document.getElementById("count").value;
-    if (color == "red"){
+    text = document.getElementById("taskText").value;
+    color = document.getElementById("taskColor").value;
+    if (color == "red") {
         textcolor = "white";
-    }
-    else{
+    } else {
         textcolor = "black";
     }
-    //    console.log(text,color);
     firebase.database().ref('notes/taskId/').once('value').then(function (snapshot) {
-        count = snapshot.val().count; 
+        count = snapshot.val().count;
         console.log(count);
-        inc(count,text,color,textcolor);
+        inc(count, text, color, textcolor);
         count = count + 1;
         firebase.database().ref('notes/taskId/').set({
-            count : count
+            count: count
         })
     })
 }
-function inc(count,text,color,textcolor){
-    console.log(count);
-    firebase.database().ref('notes/' + count + "/").set({
+
+function inc(count, text, color, textcolor) {
+    firebase.database().ref('notes/tasks/' + count + "/").set({
         message: text,
         color: color,
         star: false,
-        textcolor : textcolor
+        textcolor: textcolor,
+        task_id:count
     })
 
-    
+
     $("#task-container").empty();
 }
 
 function displayTask(data) {
     $("#task-container").empty();
     database = firebase.database();
-    var ref = database.ref('notes');
+    var ref = database.ref('notes/tasks/');
     ref.on('value', gotData, errData);
 }
 
 function gotData(data) {
     var task_list = data.val();
-
     var keys = Object.keys(task_list);
-    // console.log(keys.length);
-    for (var i = 1; i < keys.length-1; i++) {
+    console.log(keys.length);
+    for (var i = 0; i<keys.length; i++) {
         var k = keys[i];
-        var text = task_list[k].text;
         var color = task_list[k].color;
         var message = task_list[k].message;
         var textcolor = task_list[k].textcolor;
-        // console.log(i);
-        myFunction(text, color, message,textcolor,i);
+        var task_id = task_list[k].task_id;
+        console.log(color,message,textcolor,task_id);
+        myFunction(color, message, textcolor, task_id);
     }
+    
 
 }
 
@@ -75,58 +72,64 @@ function errData(err) {
     console.log(err)
 }
 
-function myFunction(text, color, message,textcolor,count){
+function myFunction(color, message, textcolor, task_id) {
     var container = document.getElementById("task-container");
-        var el = document.createElement("div");
-        el.className = "task-card";
-        el.id = "task-card";
-        // el.innerHTML = text;
-        el.style.color = textcolor;
-        el.style.backgroundColor = color;
-        container.append(el);
+    var el = document.createElement("div");
+    el.className = "task-card";
+    el.id = "task-card";
+    // el.innerHTML = text;
+    el.style.color = textcolor;
+    el.style.backgroundColor = color;
+    container.append(el);
 
-        var ml = document.createElement("p");
-        ml.id = "task-message";
-        ml.innerHTML = message + '<br>';
-        ml.style.color = textcolor;
-        ml.style.backgroundColor = color;
-        el.append(message);
+    var ml = document.createElement("p");
+    ml.id = "task-message";
+    ml.innerHTML = message + '<br>';
+    ml.style.color = textcolor;
+    ml.style.backgroundColor = color;
+    el.append(message);
 
-       
-        code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${count})">Edit</button>`;
-        
-        var bl = document.createElement("p");
-        bl.innerHTML = code;
-        el.append(bl);
+
+    code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${task_id})">Edit</button>`;
+    editbtn = `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+            data-whatever="@mdo" onClick="taskEdit(${task_id})" >Edit</button>`
+
+    var bl = document.createElement("p");
+    bl.innerHTML = editbtn;
+    el.append(bl);
 
     // console.log(text, color, star);
 }
 
 
-function taskEdit(taskId) {
-    firebase.database().ref('notes/' + taskId +'/').once('value').then(function (snapshot) {
+function taskEdit(task_id) {
+    firebase.database().ref('notes/tasks/' + task_id + '/').once('value').then(function (snapshot) {
         var message = snapshot.val().message;
         var color = snapshot.val().color;
-        document.getElementById("inputCity").value = message;
-        document.getElementById("inputState").value = color;
-        console.log(message,color);
+        document.getElementById("changetask").value = message;
+        document.getElementById("changecolor").value = color;
+        console.log(message, color,task_id);
     })
-    
-    
-
-
-    // document.getElementById("inputCity").value = message;
-    // document.getElementById("inputState").value = color;
-    // document.getElementById("count").value = taskId;
-
 }
 
 function taskDelete() {
-    ref = firebase.database().ref('notes/' + 1 + "/")
+    ref = firebase.database().ref('notes/tasks/' + 1 + "/")
     ref.remove();
     refresh();
 }
 
 function refresh() {
     window.location.reload();
+}
+
+
+function taskUpdate(task_id) {
+    new_text = document.getElementById("changetask").value;
+    new_color = document.getElementById("changecolor").value;
+    console.log(task_id);
+    firebase.database().ref('notes/tasks/'+task_id+"/").set({
+        message: new_text,
+        color: new_color,
+        star: false,
+    })
 }
