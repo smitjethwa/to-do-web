@@ -57,16 +57,15 @@ function gotData(data) {
     var task_list = data.val();
 
     var keys = Object.keys(task_list);
-    // count = keys.length;
-    // console.log(count);
-
-    for (var i = 0; i < keys.length; i++) {
+    console.log(keys.length);
+    for (var i = 0; i < keys.length-1; i++) {
         var k = keys[i];
         var text = task_list[k].text;
         var color = task_list[k].color;
         var message = task_list[k].message;
         var textcolor = task_list[k].textcolor;
-        myFunction(text, color, message,textcolor,i);
+        console.log(i);
+        myFunction(text, color, message,textcolor);
     }
 
 }
@@ -76,7 +75,7 @@ function errData(err) {
     console.log(err)
 }
 
-function myFunction(text, color, message,textcolor,taskId){
+function myFunction(text, color, message,textcolor){
     var container = document.getElementById("task-container");
         var el = document.createElement("div");
         el.className = "task-card";
