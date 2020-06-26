@@ -57,15 +57,15 @@ function gotData(data) {
     var task_list = data.val();
 
     var keys = Object.keys(task_list);
-    console.log(keys.length);
-    for (var i = 0; i < keys.length-1; i++) {
+    // console.log(keys.length);
+    for (var i = 1; i < keys.length-1; i++) {
         var k = keys[i];
         var text = task_list[k].text;
         var color = task_list[k].color;
         var message = task_list[k].message;
         var textcolor = task_list[k].textcolor;
-        console.log(i);
-        myFunction(text, color, message,textcolor);
+        // console.log(i);
+        myFunction(text, color, message,textcolor,i);
     }
 
 }
@@ -75,7 +75,7 @@ function errData(err) {
     console.log(err)
 }
 
-function myFunction(text, color, message,textcolor){
+function myFunction(text, color, message,textcolor,count){
     var container = document.getElementById("task-container");
         var el = document.createElement("div");
         el.className = "task-card";
@@ -93,7 +93,7 @@ function myFunction(text, color, message,textcolor){
         el.append(message);
 
        
-        code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${taskId})">Edit</button>`;
+        code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${count})">Edit</button>`;
         
         var bl = document.createElement("p");
         bl.innerHTML = code;
@@ -104,13 +104,12 @@ function myFunction(text, color, message,textcolor){
 
 
 function taskEdit(taskId) {
-    console.log(taskId);
     firebase.database().ref('notes/' + taskId +'/').once('value').then(function (snapshot) {
         var message = snapshot.val().message;
         var color = snapshot.val().color;
         document.getElementById("inputCity").value = message;
         document.getElementById("inputState").value = color;
-        document.getElementById("count").value = taskId;
+        console.log(message,color);
     })
     
     
