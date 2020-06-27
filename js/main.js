@@ -109,6 +109,7 @@ function taskEdit(task_id) {
         document.getElementById("changetask").value = message;
         document.getElementById("changecolor").value = color;
         console.log(message, color,task_id);
+        document.getElementById('task_id').value = task_id;
     })
 }
 
@@ -123,13 +124,23 @@ function refresh() {
 }
 
 
-function taskUpdate(task_id) {
+function taskUpdate() {
     new_text = document.getElementById("changetask").value;
     new_color = document.getElementById("changecolor").value;
+    task_id = document.getElementById("task_id").value;
     console.log(task_id);
-    firebase.database().ref('notes/tasks/'+task_id+"/").set({
+    var postData = {
+        // textcolor: textcolor,
+        // task_id:count,
         message: new_text,
         color: new_color,
         star: false,
-    })
+      };
+    // var updates = {};
+    // updates['notes/tasks/' + task_id + '/'] = postData;
+    // return firebase.database().ref().update(updates);
+    ref = firebase.database().ref('notes/tasks/' + task_id + "/");
+    ref.update(postData);
+
+
 }
