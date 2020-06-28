@@ -1,12 +1,12 @@
 const firebaseConfig = {
-    apiKey: "AIzaSyAwNcNyJWcHrV4_n1cR7Fn5ooUGgXrsEpg",
+    apiKey: "",
     authDomain: "hey-smit.firebaseapp.com",
     databaseURL: "https://hey-smit.firebaseio.com",
     projectId: "hey-smit",
     storageBucket: "hey-smit.appspot.com",
-    messagingSenderId: "702989272936",
-    appId: "1:702989272936:web:ab81f2b04cb9c14f57f8dd",
-    measurementId: "G-TJCZW88ZYS"
+    messagingSenderId: "",
+    appId: "",
+    measurementId: ""
 };
 
 firebase.initializeApp(firebaseConfig);
