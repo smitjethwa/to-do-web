@@ -55,19 +55,21 @@ function displayTask(data) {
 
 function gotData(data) {
     var task_list = data.val();
-    var keys = Object.keys(task_list);
-    // console.log(keys.length);
-    for (var i = 0; i < keys.length; i++) {
-        var k = keys[i];
-        var color = task_list[k].color;
-        var message = task_list[k].message;
-        var textcolor = task_list[k].textcolor;
-        var task_id = task_list[k].task_id;
-        // console.log(color,message,textcolor,task_id);
-        myFunction(color, message, textcolor, task_id);
+    if (task_list == null) {
+        document.getElementById("empty-list").innerHTML = "Note list is Empty! Try Entering note in the list.";
+    } else {
+        var keys = Object.keys(task_list);
+        console.log(keys.length);
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i];
+            var color = task_list[k].color;
+            var message = task_list[k].message;
+            var textcolor = task_list[k].textcolor;
+            var task_id = task_list[k].task_id;
+            // console.log(color,message,textcolor,task_id);
+            myFunction(color, message, textcolor, task_id);
+        }
     }
-
-
 }
 
 function errData(err) {
@@ -110,7 +112,7 @@ function taskEdit(task_id) {
     firebase.database().ref('notes/tasks/' + task_id + '/').once('value').then(function (snapshot) {
         var message = snapshot.val().message;
         var color = snapshot.val().color;
-        console.log("Hello");   
+        // console.log("Hello");   
         document.getElementById("changetask").value = message;
         document.getElementById("changecolor").value = color;
         // console.log(message, color,task_id);

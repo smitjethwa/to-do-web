@@ -35,3 +35,7 @@
     margin-left: 1%;
 }
 
+#empty-list{
+    color: red;
+    font-weight: bold;
+}
