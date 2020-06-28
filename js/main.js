@@ -1,12 +1,12 @@
 const firebaseConfig = {
-    apiKey: "",
+    apiKey: "AIzaSyAwNcNyJWcHrV4_n1cR7Fn5ooUGgXrsEpg",
     authDomain: "hey-smit.firebaseapp.com",
     databaseURL: "https://hey-smit.firebaseio.com",
     projectId: "hey-smit",
     storageBucket: "hey-smit.appspot.com",
-    messagingSenderId: "",
-    appId: "",
-    measurementId: ""
+    messagingSenderId: "702989272936",
+    appId: "1:702989272936:web:ab81f2b04cb9c14f57f8dd",
+    measurementId: "G-TJCZW88ZYS"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -21,7 +21,7 @@ function upload() {
     }
     firebase.database().ref('notes/taskId/').once('value').then(function (snapshot) {
         count = snapshot.val().count;
-        console.log(count);
+        // console.log(count);
         inc(count, text, color, textcolor);
         count = count + 1;
         firebase.database().ref('notes/taskId/').set({
@@ -36,10 +36,13 @@ function inc(count, text, color, textcolor) {
         color: color,
         star: false,
         textcolor: textcolor,
-        task_id:count
+        task_id: count
     })
-
-
+    // alert("Note Added!");
+    document.getElementById("success-message").innerHTML = "Data added successfully!!";
+    setTimeout(function () {
+        document.getElementById("success-message").style.visibility = "hidden";
+    }, 3000); // <-- time in milliseconds
     $("#task-container").empty();
 }
 
@@ -53,17 +56,17 @@ function displayTask(data) {
 function gotData(data) {
     var task_list = data.val();
     var keys = Object.keys(task_list);
-    console.log(keys.length);
-    for (var i = 0; i<keys.length; i++) {
+    // console.log(keys.length);
+    for (var i = 0; i < keys.length; i++) {
         var k = keys[i];
         var color = task_list[k].color;
         var message = task_list[k].message;
         var textcolor = task_list[k].textcolor;
         var task_id = task_list[k].task_id;
-        console.log(color,message,textcolor,task_id);
+        // console.log(color,message,textcolor,task_id);
         myFunction(color, message, textcolor, task_id);
     }
-    
+
 
 }
 
@@ -90,12 +93,14 @@ function myFunction(color, message, textcolor, task_id) {
     el.append(message);
 
 
-    code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${task_id})">Edit</button>`;
-    editbtn = `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-            data-whatever="@mdo" onClick="taskEdit(${task_id})" >Edit</button>`
+    // code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${task_id})">Edit</button>`;
+    editbtn = `<button type="button" class="btn btn-primary editbtn" data-toggle="modal" data-target="#exampleModal"
+            data-whatever="@mdo" onClick="taskEdit(${task_id})">Edit</button>`
+    delbtn = `<button type="button" class="btn btn-danger delbtn" data-toggle="modal" data-target="#exampleModal"
+            data-whatever="@mdo" onClick="taskDelete(${task_id})">Delete</button>`
 
     var bl = document.createElement("p");
-    bl.innerHTML = editbtn;
+    bl.innerHTML = editbtn + delbtn;
     el.append(bl);
 
     // console.log(text, color, star);
@@ -108,15 +113,16 @@ function taskEdit(task_id) {
         var color = snapshot.val().color;
         document.getElementById("changetask").value = message;
         document.getElementById("changecolor").value = color;
-        console.log(message, color,task_id);
+        // console.log(message, color,task_id);
         document.getElementById('task_id').value = task_id;
     })
 }
 
-function taskDelete() {
-    ref = firebase.database().ref('notes/tasks/' + 1 + "/")
+function taskDelete(task_id) {
+    ref = firebase.database().ref('notes/tasks/' + task_id + "/");
     ref.remove();
-    refresh();
+    displayTask();
+    alert("Note removed.")
 }
 
 function refresh() {
@@ -128,19 +134,20 @@ function taskUpdate() {
     new_text = document.getElementById("changetask").value;
     new_color = document.getElementById("changecolor").value;
     task_id = document.getElementById("task_id").value;
-    console.log(task_id);
+    // console.log(task_id);
     var postData = {
         // textcolor: textcolor,
         // task_id:count,
         message: new_text,
         color: new_color,
         star: false,
-      };
+    };
     // var updates = {};
     // updates['notes/tasks/' + task_id + '/'] = postData;
     // return firebase.database().ref().update(updates);
     ref = firebase.database().ref('notes/tasks/' + task_id + "/");
     ref.update(postData);
-
-
+    // refresh();
+    displayTask();
+    alert("Note Updated!");
 }
