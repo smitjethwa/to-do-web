@@ -96,8 +96,7 @@ function myFunction(color, message, textcolor, task_id) {
     // code = `<button class="btn btn-primary" value="Edit" onClick="taskEdit(${task_id})">Edit</button>`;
     editbtn = `<button type="button" class="btn btn-primary editbtn" data-toggle="modal" data-target="#exampleModal"
             data-whatever="@mdo" onClick="taskEdit(${task_id})">Edit</button>`
-    delbtn = `<button type="button" class="btn btn-danger delbtn" data-toggle="modal" data-target="#exampleModal"
-            data-whatever="@mdo" onClick="taskDelete(${task_id})">Delete</button>`
+    delbtn = `<button type="button" class="btn btn-danger delbtn" onClick="taskDelete(${task_id})">Delete</button>`
 
     var bl = document.createElement("p");
     bl.innerHTML = editbtn + delbtn;
@@ -111,6 +110,7 @@ function taskEdit(task_id) {
     firebase.database().ref('notes/tasks/' + task_id + '/').once('value').then(function (snapshot) {
         var message = snapshot.val().message;
         var color = snapshot.val().color;
+        console.log("Hello");   
         document.getElementById("changetask").value = message;
         document.getElementById("changecolor").value = color;
         // console.log(message, color,task_id);
@@ -142,9 +142,6 @@ function taskUpdate() {
         color: new_color,
         star: false,
     };
-    // var updates = {};
-    // updates['notes/tasks/' + task_id + '/'] = postData;
-    // return firebase.database().ref().update(updates);
     ref = firebase.database().ref('notes/tasks/' + task_id + "/");
     ref.update(postData);
     // refresh();
